@@ -21,6 +21,9 @@
 
       <!-- 按钮 -->
       <button v-if="btnTitle" :disabled="disabled" @click="$emit('btnClick')">{{ btnTitle }}</button>
+
+      <!-- canvas -->
+      <canvas v-if="canvas" id="reg_canvas" width="150" height="50" style="background:rgba(0, 0, 0, 0.1)" @click="$emit('CanvasClick')"></canvas>
     </div>
 
     <!-- 错误提醒 -->
@@ -41,7 +44,8 @@
       name: String,
       disabled: Boolean,
       btnTitle: String,
-      error: String
+      error: String,
+      canvas:Boolean
     }
   }
 </script>

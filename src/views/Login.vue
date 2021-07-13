@@ -31,6 +31,17 @@
                    @btnClick="getVerfyCode()"
       />
 
+       <!-- 验证码 -->
+      <input-group type="number"
+                   placeholder="请输入正确的验证码"
+                   name="JiaoYanMa"
+                   v-model="verifyCode"
+                   :disabled="disabled"
+                   :error="error.code"
+                   :canvas='true'
+                   @CanvasClick="getImgReg()"
+      />
+
       <p class="tip">* 未注册过甜品小屋的用户，登录时默认注册</p>
       <a href="javascript: void(0);" class="form-btn" @click="clickLogin()">登录</a>
       <div class="agreement">
@@ -69,13 +80,54 @@
         verifyCode: '',
         btnTitle: '获取验证码',
         disabled: false,
-        error: {}
+        error: {},
+        regStr:'',//图片验证的值
       }
     },
     components: {
       'input-group': InputGroup
     },
+    mounted(){
+      this.getImgReg()
+    },
     methods:{
+      // 生成图片验证
+      getImgReg(){
+        let Str = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+        let reg = [1,'a','A',1]
+        let regStr = ''
+        reg.forEach(item=>{
+          // 创建验证码
+          let random = reg[parseInt(Math.random()*3)]
+            if(random === 1){
+              regStr += parseInt(Math.random()*10)
+            }else if(random === 'a'){
+              regStr += Str[parseInt(Math.random()*26)]
+            }else{
+              regStr += Str[parseInt(Math.random()*26)].toLocaleUpperCase()
+            }
+        })
+        this.regStr = regStr
+        this.$nextTick(()=>{
+          // 生成canvas
+          let canvasDom = document.querySelector('#reg_canvas')
+          canvasDom.width = canvasDom.width
+          let ctx = canvasDom.getContext("2d");
+          // 验证码填充
+          ctx.font = '34px Arial';
+          ctx.fillText(regStr,35,40);
+          for(let i = 0; i < 30; i++){
+            // 背景填充
+            let r = Math.floor(Math.random()*256);
+            let g = Math.floor(Math.random()*256);
+            let b = Math.floor(Math.random()*256);
+            let rgb = `rgb(${r},${g},${b})`;
+            ctx.fillStyle = rgb;
+            ctx.fillRect(Math.random()*150,Math.random()*50,Math.random()*9,Math.random()*9);
+          }
+        })
+        
+      },
       // 点击获取验证码
       getVerfyCode(){
         if(this.validatePhone()){
